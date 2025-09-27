@@ -28,7 +28,7 @@ func TestUserCRUD_E2E(t *testing.T) {
 	// Create
 	createReq := domain.CreateUserRequest{
 		Name:     "John Doe",
-		Email:    "john@example.com",
+		Email:    "john@examplew.com",
 		Password: "Password1234",
 	}
 	type CreateType domain.ResponseSingleData[domain.User]

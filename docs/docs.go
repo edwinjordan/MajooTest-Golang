@@ -24,6 +24,230 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/posts": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all posts",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "List posts",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Posts"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseSingleData-domain_Empty"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "create a new post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Create post",
+                "parameters": [
+                    {
+                        "description": "Post data",
+                        "name": "post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreatePostsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreatePostsRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseSingleData-domain_Empty"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseSingleData-domain_Empty"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get post details by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Get post by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Posts"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseSingleData-domain_Empty"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "update an existing post entry by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Update post",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated post data",
+                        "name": "post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.UpdatePostsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Posts"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseSingleData-domain_Empty"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseSingleData-domain_Empty"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseSingleData-domain_Empty"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "delete an existing post entry by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Delete post",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseSingleData-domain_Empty"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseSingleData-domain_Empty"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "security": [
@@ -250,6 +474,25 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "domain.CreatePostsRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "slug",
+                "title"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.CreateUserRequest": {
             "type": "object",
             "required": [
@@ -272,6 +515,29 @@ const docTemplate = `{
         "domain.Empty": {
             "type": "object"
         },
+        "domain.Posts": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.ResponseSingleData-domain_Empty": {
             "type": "object",
             "properties": {
@@ -293,6 +559,25 @@ const docTemplate = `{
                 },
                 "status": {
                     "description": "string",
+                    "type": "string"
+                }
+            }
+        },
+        "domain.UpdatePostsRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "slug",
+                "title"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }

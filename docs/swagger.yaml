@@ -1,5 +1,18 @@
 basePath: /api/v1
 definitions:
+  domain.CreatePostsRequest:
+    properties:
+      content:
+        type: string
+      slug:
+        type: string
+      title:
+        type: string
+    required:
+    - content
+    - slug
+    - title
+    type: object
   domain.CreateUserRequest:
     properties:
       email:
@@ -14,6 +27,21 @@ definitions:
     - password
     type: object
   domain.Empty:
+    type: object
+  domain.Posts:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      slug:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
     type: object
   domain.ResponseSingleData-domain_Empty:
     properties:
@@ -30,6 +58,19 @@ definitions:
       status:
         description: string
         type: string
+    type: object
+  domain.UpdatePostsRequest:
+    properties:
+      content:
+        type: string
+      slug:
+        type: string
+      title:
+        type: string
+    required:
+    - content
+    - slug
+    - title
     type: object
   domain.UpdateUserRequest:
     properties:
@@ -71,6 +112,149 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /posts:
+    get:
+      description: Get all posts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Posts'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+      security:
+      - ApiKeyAuth: []
+      summary: List posts
+      tags:
+      - posts
+    post:
+      consumes:
+      - application/json
+      description: create a new post
+      parameters:
+      - description: Post data
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreatePostsRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.CreatePostsRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+      summary: Create post
+      tags:
+      - posts
+  /posts/{id}:
+    delete:
+      description: delete an existing post entry by ID
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete post
+      tags:
+      - posts
+    get:
+      description: Get post details by ID
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Posts'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+      security:
+      - ApiKeyAuth: []
+      summary: Get post by ID
+      tags:
+      - posts
+    put:
+      consumes:
+      - application/json
+      description: update an existing post entry by ID
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated post data
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdatePostsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Posts'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+      security:
+      - ApiKeyAuth: []
+      summary: Update post
+      tags:
+      - posts
   /users:
     get:
       description: Get all user
