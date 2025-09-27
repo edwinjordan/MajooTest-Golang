@@ -173,8 +173,8 @@ func (h *CommentHandler) CreateComment(c echo.Context) error {
 // @Accept  json
 // @Produce  json
 // @Param   id    path  string             true  "Comment ID"
-// @Param   post  body  domain.UpdateCommentsRequest  true  "Updated comment data"
-// @Success 200 {object} domain.Comments
+// @Param   post  body  domain.UpdateCommentRequest  true  "Updated comment data"
+// @Success 200 {object} domain.Comment
 // @Failure 400 {object} domain.ResponseSingleData[domain.Empty]
 // @Failure 404 {object} domain.ResponseSingleData[domain.Empty]
 // @Failure 500 {object} domain.ResponseSingleData[domain.Empty]
