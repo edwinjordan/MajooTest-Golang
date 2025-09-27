@@ -7,7 +7,6 @@ import (
 	"github.com/edwinjordan/MajooTest-Golang/domain"
 	"github.com/edwinjordan/MajooTest-Golang/service"
 	"github.com/edwinjordan/MajooTest-Golang/service/mocks"
-	"github.com/edwinjordan/MajooTest-Golang/utils"
 
 	"testing"
 
@@ -135,12 +134,12 @@ func TestPostsService_UpdatePosts(t *testing.T) {
 		ID:      postsID.String(),
 		Title:   "Old Title",
 		Content: "old content",
-		Slug:    "old-slug",
+		Slug:    "old-title",
 	}
 	updateReq := &domain.Posts{
 		Title:   "New Title",
 		Content: "new content",
-		Slug:    "new-slug",
+		Slug:    "new-title",
 	}
 
 	t.Run("Successfully updates a post", func(t *testing.T) {
@@ -150,7 +149,7 @@ func TestPostsService_UpdatePosts(t *testing.T) {
 			ID:      postsID.String(),
 			Title:   updateReq.Title,
 			Content: updateReq.Content,
-			Slug:    utils.Slugify(updateReq.Title),
+			Slug:    updateReq.Slug,
 		}
 		mockPostsRepo.On("UpdatePosts", mock.Anything, postsID, expectedUpdatedPosts).Return(expectedUpdatedPosts, nil).Once()
 
@@ -199,12 +198,14 @@ func TestPostsService_UpdatePosts(t *testing.T) {
 		mockPostsRepo = new(mocks.PostsRepository)
 		postsService = service.NewPostsService(mockPostsRepo)
 
+		mockPostsRepo.On("GetPosts", mock.Anything, postsID).Return(existingPosts, nil).Once()
+
 		repoErr := errors.New("update posts repo error")
 		expectedUpdatedPosts := &domain.Posts{
 			ID:      postsID.String(),
 			Title:   updateReq.Title,
 			Content: updateReq.Content,
-			Slug:    utils.Slugify(updateReq.Title),
+			Slug:    updateReq.Slug,
 		}
 		mockPostsRepo.On("UpdatePosts", mock.Anything, postsID, expectedUpdatedPosts).Return(nil, repoErr).Once()
 

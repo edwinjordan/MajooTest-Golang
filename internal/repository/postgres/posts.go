@@ -142,7 +142,7 @@ func (u *PostsRepository) UpdatePosts(ctx context.Context, id uuid.UUID, post *d
 		RETURNING id, title, content, slug, created_at, updated_at`
 
 	var updatedPost domain.Posts
-	err := u.Conn.QueryRow(ctx, query, post.Title, post.Content, post.Slug, id).Scan(
+	err := u.Conn.QueryRow(ctx, query, post.Title, post.Content, utils.Slugify(post.Title), id).Scan(
 		&updatedPost.ID,
 		&updatedPost.Title,
 		&updatedPost.Content,
