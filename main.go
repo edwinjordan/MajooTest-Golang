@@ -91,12 +91,15 @@ func main() {
 	})
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	userRepo := postgres.NewUserRepository(dbPool)
+	postsRepo := postgres.NewPostsRepository(dbPool)
 	userService := service.NewUserService(userRepo)
+	postsService := service.NewPostsService(postsRepo)
 
 	apiV1 := e.Group("/api/v1")
 	usersGroup := apiV1.Group("")
-
+	postsGroup := apiV1.Group("")
 	rest.NewUserHandler(usersGroup, userService)
+	rest.NewPostsHandler(postsGroup, postsService)
 
 	// Get host from environment variable, default to 127.0.0.1 if not set
 	host := os.Getenv("APP_HOST")

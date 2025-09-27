@@ -27,3 +27,22 @@ go run cmd/main.go migrate reset
 go run cmd/main.go migrate version
 ```
 
+
+## 1. Golang Seed
+- "How implement seeding in this project"
+- "Seed all tables with sample data"
+```bash
+go run cmd/main.go seed users
+```
+- "Seed only users table"
+```bash
+go run cmd/main.go seed users
+```
+- "Clear all data from users table"
+```bash
+go run cmd/main.go seed clear
+```
+- "Clear and re-seed users table (useful for development)"
+```bash
+go run cmd/main.go seed refresh
+```

@@ -227,7 +227,7 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 // @Failure 500 {object} domain.ResponseSingleData[domain.Empty]
 // @Security ApiKeyAuth
 // @Router /users/{id} [delete]
-func (h *UserHandler) DeleteUser(c echo.Context) error {
+func (h *UserHandler) DeleteUsers(c echo.Context) error {
 	idParam := c.Param("id")
 	id, err := uuid.Parse(idParam)
 	if err != nil {

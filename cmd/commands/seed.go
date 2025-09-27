@@ -17,17 +17,31 @@ func runSeeder(db *sql.DB, target string) error {
 
 	switch target {
 	case "all":
-		if err := seeders.SeedTopics(db); err != nil {
-			return fmt.Errorf("seeding Topics failed: %w", err)
+		if err := seeders.SeedUsers(db); err != nil {
+			return fmt.Errorf("seeding users failed: %w", err)
 		}
-		// continue for other tables
-	case "Topics":
-		if err := seeders.SeedTopics(db); err != nil {
-			return fmt.Errorf("seeding Topics failed: %w", err)
+		logging.LogInfo(ctx, "Successfully seeded all tables")
+	case "users":
+		if err := seeders.SeedUsers(db); err != nil {
+			return fmt.Errorf("seeding users failed: %w", err)
 		}
-		// continue for other tables
+		logging.LogInfo(ctx, "Successfully seeded users table")
+	case "clear":
+		if err := seeders.ClearUsers(db); err != nil {
+			return fmt.Errorf("clearing users failed: %w", err)
+		}
+		logging.LogInfo(ctx, "Successfully cleared users table")
+	case "refresh":
+		// Clear and then seed users
+		if err := seeders.ClearUsers(db); err != nil {
+			return fmt.Errorf("clearing users failed: %w", err)
+		}
+		if err := seeders.SeedUsers(db); err != nil {
+			return fmt.Errorf("seeding users failed: %w", err)
+		}
+		logging.LogInfo(ctx, "Successfully refreshed users table")
 	default:
-		return errors.New("unknown seed target: " + target)
+		return errors.New("unknown seed target: " + target + ". Available targets: all, users, clear, refresh")
 	}
 
 	return nil
