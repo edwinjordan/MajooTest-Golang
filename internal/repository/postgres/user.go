@@ -28,26 +28,27 @@ func (u *UserRepository) CreateUser(ctx context.Context, user *domain.CreateUser
 	query := `
 		INSERT INTO users (name, email, password, created_at, updated_at)
 		VALUES ($1, $2, $3, NOW(), NOW())
-		RETURNING id, name, email, created_at, updated_at`
+		RETURNING id`
 
 	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
 		return nil, err
 	}
 
-	var createdUser domain.User
+	var id uuid.UUID
+
 	err = u.Conn.QueryRow(ctx, query, user.Name, user.Email, hashedPassword).Scan(
-		&createdUser.ID,
-		&createdUser.Name,
-		&createdUser.Email,
-		&createdUser.CreatedAt,
-		&createdUser.UpdatedAt,
+		&id,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	return &createdUser, nil
+	return &domain.User{
+		ID:    id.String(),
+		Name:  user.Name,
+		Email: user.Email,
+	}, nil
 }
 
 func (u *UserRepository) GetUserList(ctx context.Context, filter *domain.UserFilter) ([]domain.User, error) {
