@@ -78,6 +78,11 @@ docker run --rm -p 8000:8000 \
   zogtest
 ```
 
+- Run Swagger
+```bash
+http://localhost:8000/swagger/index.html
+```
+
 Konfigurasi
 - Variabel lingkungan (contoh):
   - PORT: port HTTP (default 8080)

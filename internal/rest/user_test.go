@@ -33,10 +33,25 @@ func TestUserCRUD_E2E(t *testing.T) {
 	// Now start the test server
 	kit.Start(t)
 
+	//user := creUser.Data
+	createReqUser := domain.CreateUserRequest{
+		Name:     "John Doe Alex",
+		Email:    "johnalex11@example.com",
+		Password: "Password1234",
+	}
+
+	type CreateTypeUser domain.ResponseSingleData[domain.User]
+	creUser, _ := doRequest[CreateTypeUser](
+		t, http.MethodPost,
+		kit.BaseURL+"/api/v1/users",
+		createReqUser,
+	)
+	//end create user first
+	userCreated := creUser.Data
 	// Login to get JWT token using seeded user
 	loginReq := domain.LoginRequest{
-		Email:    "bob@example.com",
-		Password: "password123",
+		Email:    userCreated.Email,
+		Password: "Password1234",
 	}
 	type LoginType domain.ResponseSingleData[domain.LoginResponse]
 	loginResp, code := doRequest[LoginType](
