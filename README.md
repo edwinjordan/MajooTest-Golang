@@ -74,8 +74,8 @@ docker build -t majoo .
 docker run --rm -p 8000:8000 \
   -e APP_HOST=0.0.0.0 \
   -e APP_PORT=8000 \
-  -e DATABASE_URL="postgres://postgres:aero1996@host.docker.internal:5432/zogtest-golang" \
-  zogtest
+  -e DATABASE_URL="postgres://postgres:aero1996@host.docker.internal:5432/majootest-golang" \
+  majoo
 ```
 
 - Run Swagger
