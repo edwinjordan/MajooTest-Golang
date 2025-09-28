@@ -93,7 +93,7 @@ func (kit *TestKit) Start(t *testing.T) {
 // Returns the T instance and the HTTP status code.
 //
 // The test is fatally failed if any step errors.
-func doRequest[T any](t *testing.T, method, url string, payload any) (T, int) {
+func doRequest[T any](t *testing.T, method, url string, payload any, headers ...map[string]string) (T, int) {
 	var body io.Reader
 	if payload != nil {
 		b, err := json.Marshal(payload)
@@ -106,6 +106,13 @@ func doRequest[T any](t *testing.T, method, url string, payload any) (T, int) {
 
 	if payload != nil {
 		req.Header.Set("Content-Type", "application/json")
+	}
+
+	// Add optional headers (like Authorization)
+	if len(headers) > 0 {
+		for key, value := range headers[0] {
+			req.Header.Set(key, value)
+		}
 	}
 
 	resp, err := http.DefaultClient.Do(req)

@@ -17,29 +17,49 @@ import (
 func TestUserCRUD_E2E(t *testing.T) {
 	kit := NewTestKit(t)
 
-	// Wire the routes and services
+	// Create API v1 group
+	apiV1 := kit.Echo.Group("/api/v1")
+
+	// Wire auth routes (no authentication required)
+	authRepo := postgres.NewAuthRepository(kit.DB)
+	authSvc := service.NewAuthService(authRepo)
+	rest.NewAuthHandler(apiV1.Group("/auth"), authSvc)
+
+	// Wire user routes (no authentication for user creation, but protected for other operations)
 	userRepo := postgres.NewUserRepository(kit.DB)
 	userSvc := service.NewUserService(userRepo)
-	rest.NewUserHandler(kit.Echo.Group("/api/v1"), userSvc)
+	rest.NewUserHandler(apiV1.Group("/users"), userSvc)
 
 	// Now start the test server
 	kit.Start(t)
 
-	// Create
-	createReq := domain.CreateUserRequest{
-		Name:     "John Doe",
-		Email:    "john@examplew.com",
-		Password: "Password1234",
+	// Login to get JWT token using seeded user
+	loginReq := domain.LoginRequest{
+		Email:    "bob@example.com",
+		Password: "password123",
 	}
-	type CreateType domain.ResponseSingleData[domain.User]
-	cre, code := doRequest[CreateType](
+	type LoginType domain.ResponseSingleData[domain.LoginResponse]
+	loginResp, code := doRequest[LoginType](
 		t, http.MethodPost,
-		kit.BaseURL+"/api/v1/users",
-		createReq,
+		kit.BaseURL+"/api/v1/auth/login",
+		loginReq,
 	)
-	require.Equal(t, http.StatusCreated, code)
-	user := cre.Data
-	require.NotEmpty(t, user.ID)
+	require.Equal(t, http.StatusOK, code)
+	token := loginResp.Data.Token
+
+	// Get a seeded user for testing operations (since user creation requires admin privileges)
+	type GetUsersType domain.ResponseMultipleData[domain.User]
+	usersResp, code := doRequest[GetUsersType](
+		t, http.MethodGet,
+		kit.BaseURL+"/api/v1/users",
+		nil,
+		map[string]string{"Authorization": "Bearer " + token},
+	)
+	require.Equal(t, http.StatusOK, code)
+	require.NotEmpty(t, usersResp.Data, "Should have seeded users")
+
+	// Use the first seeded user for testing
+	user := usersResp.Data[0]
 
 	// Get
 	type GetType domain.ResponseSingleData[domain.User]
@@ -47,6 +67,7 @@ func TestUserCRUD_E2E(t *testing.T) {
 		t, http.MethodGet,
 		fmt.Sprintf("%s/api/v1/users/%s", kit.BaseURL, user.ID),
 		nil,
+		map[string]string{"Authorization": "Bearer " + token},
 	)
 	require.Equal(t, http.StatusOK, code)
 	require.Equal(t, user.ID, getE.Data.ID)
@@ -54,13 +75,14 @@ func TestUserCRUD_E2E(t *testing.T) {
 	// Update
 	updPayload := domain.User{
 		Name:  "Jane Doe",
-		Email: "jane@example.com",
+		Email: "jane@example45.com",
 	}
 	type UpdType domain.ResponseSingleData[domain.User]
 	updE, code := doRequest[UpdType](
 		t, http.MethodPut,
 		fmt.Sprintf("%s/api/v1/users/%s", kit.BaseURL, user.ID),
 		updPayload,
+		map[string]string{"Authorization": "Bearer " + token},
 	)
 	require.Equal(t, http.StatusOK, code)
 	require.Equal(t, "Jane Doe", updE.Data.Name)
@@ -72,6 +94,7 @@ func TestUserCRUD_E2E(t *testing.T) {
 		nil,
 	)
 	require.NoError(t, err)
+	req.Header.Set("Authorization", "Bearer "+token)
 	resp, err := http.DefaultClient.Do(req)
 	require.NoError(t, err)
 	require.Equal(t, http.StatusNoContent, resp.StatusCode)
@@ -83,6 +106,7 @@ func TestUserCRUD_E2E(t *testing.T) {
 		t, http.MethodGet,
 		fmt.Sprintf("%s/api/v1/users/%s", kit.BaseURL, user.ID),
 		nil,
+		map[string]string{"Authorization": "Bearer " + token},
 	)
 	require.Equal(t, http.StatusNotFound, code)
 	require.Equal(t, "User not found", errE.Message)

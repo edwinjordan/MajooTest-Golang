@@ -9,6 +9,7 @@ import (
 	"github.com/edwinjordan/MajooTest-Golang/domain"
 	"github.com/edwinjordan/MajooTest-Golang/internal/repository/postgres"
 	"github.com/edwinjordan/MajooTest-Golang/internal/rest"
+	"github.com/edwinjordan/MajooTest-Golang/internal/rest/middleware"
 	"github.com/edwinjordan/MajooTest-Golang/service"
 	"github.com/stretchr/testify/require"
 )
@@ -16,20 +17,30 @@ import (
 func TestCommentCRUD_E2E(t *testing.T) {
 	kit := NewTestKit(t)
 
-	// Wire the routes and services
-	commentRepo := postgres.NewCommentRepository(kit.DB)
-	commentSvc := service.NewCommentService(commentRepo)
-	rest.NewCommentHandler(kit.Echo.Group("/api/v1"), commentSvc)
+	// Create API v1 group
+	apiV1 := kit.Echo.Group("/api/v1")
 
-	// Also wire user routes so the test can create users (previously missing, causing 404)
+	// Wire auth routes (no authentication required)
+	authRepo := postgres.NewAuthRepository(kit.DB)
+	authSvc := service.NewAuthService(authRepo)
+	rest.NewAuthHandler(apiV1.Group("/auth"), authSvc)
+
+	// Wire user routes (no authentication for user creation, but protected for other operations)
 	userRepo := postgres.NewUserRepository(kit.DB)
 	userSvc := service.NewUserService(userRepo)
-	rest.NewUserHandler(kit.Echo.Group("/api/v1"), userSvc)
+	rest.NewUserHandler(apiV1.Group("/users"), userSvc)
 
-	// Also wire posts routes so the test can create posts (previously missing, causing 404)
+	// Wire posts routes (with authentication)
 	postsRepo := postgres.NewPostsRepository(kit.DB)
 	postsSvc := service.NewPostsService(postsRepo)
-	rest.NewPostsHandler(kit.Echo.Group("/api/v1"), postsSvc)
+	postsGroup := apiV1.Group("/posts", middleware.ValidateUserToken())
+	rest.NewPostsHandler(postsGroup, postsSvc)
+
+	// Wire comment routes (with authentication)
+	commentRepo := postgres.NewCommentRepository(kit.DB)
+	commentSvc := service.NewCommentService(commentRepo)
+	commentGroup := apiV1.Group("/comments", middleware.ValidateUserToken())
+	rest.NewCommentHandler(commentGroup, commentSvc)
 
 	// Now start the test server
 	kit.Start(t)
@@ -50,7 +61,26 @@ func TestCommentCRUD_E2E(t *testing.T) {
 	user := creUser.Data
 	//end create user first
 
-	//create post first
+	// Login to obtain JWT token first
+	type LoginType domain.ResponseSingleData[domain.LoginResponse]
+	loginReq := domain.LoginRequest{
+		Email:    "johnalex@example.com", // Use the created user's email
+		Password: "Password1234",         // Use the created user's password
+	}
+	loginRes, code := doRequest[LoginType](
+		t, http.MethodPost,
+		kit.BaseURL+"/api/v1/auth/login",
+		loginReq,
+	)
+	require.Equal(t, http.StatusOK, code)
+	token := "Bearer " + loginRes.Data.Token
+
+	// Create auth headers map
+	authHeaders := map[string]string{
+		"Authorization": token,
+	}
+
+	//create post first (with authentication)
 	createReqPost := domain.CreatePostsRequest{
 		Title:   "Double Post",
 		Content: "This is the content of the first post",
@@ -60,11 +90,13 @@ func TestCommentCRUD_E2E(t *testing.T) {
 		t, http.MethodPost,
 		kit.BaseURL+"/api/v1/posts",
 		createReqPost,
+		authHeaders,
 	)
 	posts := crePost.Data
 	//end create post first
 
-	// Create
+	// Create comment with authentication
+
 	createReq := domain.CreateCommentRequest{
 		UserID: user.ID,
 		PostID: posts.ID,
@@ -75,6 +107,7 @@ func TestCommentCRUD_E2E(t *testing.T) {
 		t, http.MethodPost,
 		kit.BaseURL+"/api/v1/comments",
 		createReq,
+		authHeaders,
 	)
 	require.Equal(t, http.StatusCreated, code)
 	comment := cre.Data
@@ -86,6 +119,7 @@ func TestCommentCRUD_E2E(t *testing.T) {
 		t, http.MethodGet,
 		fmt.Sprintf("%s/api/v1/comments/%s", kit.BaseURL, comment.ID),
 		nil,
+		authHeaders,
 	)
 	require.Equal(t, http.StatusOK, code)
 	require.Equal(t, comment.ID, getE.Data.ID)
@@ -107,7 +141,7 @@ func TestCommentCRUD_E2E(t *testing.T) {
 	userUpdate := creUserUpdate.Data
 	//end create user first
 
-	//create post first
+	//create post first (with authentication)
 	createReqPostUpdate := domain.CreatePostsRequest{
 		Title:   "Second Post",
 		Content: "This is the content of the second post",
@@ -117,6 +151,7 @@ func TestCommentCRUD_E2E(t *testing.T) {
 		t, http.MethodPost,
 		kit.BaseURL+"/api/v1/posts",
 		createReqPostUpdate,
+		authHeaders,
 	)
 	postsUpdate := crePostUpdate.Data
 	//end create post first
@@ -131,6 +166,7 @@ func TestCommentCRUD_E2E(t *testing.T) {
 		t, http.MethodPut,
 		fmt.Sprintf("%s/api/v1/comments/%s", kit.BaseURL, comment.ID),
 		updPayload,
+		authHeaders,
 	)
 	require.Equal(t, http.StatusOK, code)
 	require.Equal(t, "This is an updated comment", updE.Data.Body)
@@ -142,6 +178,7 @@ func TestCommentCRUD_E2E(t *testing.T) {
 		nil,
 	)
 	require.NoError(t, err)
+	req.Header.Set("Authorization", token)
 	resp, err := http.DefaultClient.Do(req)
 	require.NoError(t, err)
 	require.Equal(t, http.StatusNoContent, resp.StatusCode)
@@ -153,6 +190,7 @@ func TestCommentCRUD_E2E(t *testing.T) {
 		t, http.MethodGet,
 		fmt.Sprintf("%s/api/v1/comments/%s", kit.BaseURL, comment.ID),
 		nil,
+		authHeaders,
 	)
 
 	//get after delete user

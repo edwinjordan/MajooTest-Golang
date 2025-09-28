@@ -9,6 +9,7 @@ import (
 	"github.com/edwinjordan/MajooTest-Golang/domain"
 	"github.com/edwinjordan/MajooTest-Golang/internal/repository/postgres"
 	"github.com/edwinjordan/MajooTest-Golang/internal/rest"
+	"github.com/edwinjordan/MajooTest-Golang/internal/rest/middleware"
 	"github.com/edwinjordan/MajooTest-Golang/service"
 	"github.com/stretchr/testify/require"
 )
@@ -16,24 +17,60 @@ import (
 func TestPostsCRUD_E2E(t *testing.T) {
 	kit := NewTestKit(t)
 
-	// Wire the routes and services
+	// Create API v1 group
+	apiV1 := kit.Echo.Group("/api/v1")
+
+	// Wire auth routes (no authentication required)
+	authRepo := postgres.NewAuthRepository(kit.DB)
+	authSvc := service.NewAuthService(authRepo)
+	rest.NewAuthHandler(apiV1.Group("/auth"), authSvc)
+
+	// Wire user routes (no authentication for user creation, but protected for other operations)
+	userRepo := postgres.NewUserRepository(kit.DB)
+	userSvc := service.NewUserService(userRepo)
+	rest.NewUserHandler(apiV1.Group("/users"), userSvc)
+
+	// Wire posts routes (with authentication)
 	postsRepo := postgres.NewPostsRepository(kit.DB)
 	postsSvc := service.NewPostsService(postsRepo)
-	rest.NewPostsHandler(kit.Echo.Group("/api/v1"), postsSvc)
+	postsGroup := apiV1.Group("/posts", middleware.ValidateUserToken())
+	rest.NewPostsHandler(postsGroup, postsSvc)
 
 	// Now start the test server
 	kit.Start(t)
 
+	//user := creUser.Data
+	//end create user first
+
+	// Login to obtain JWT token first
+	type LoginType domain.ResponseSingleData[domain.LoginResponse]
+	loginReq := domain.LoginRequest{
+		Email:    "john@example.com", // Use the seeded user's email
+		Password: "password123",      // Use the seeded user's password
+	}
+	loginRes, code := doRequest[LoginType](
+		t, http.MethodPost,
+		kit.BaseURL+"/api/v1/auth/login",
+		loginReq,
+	)
+	require.Equal(t, http.StatusOK, code)
+	token := "Bearer " + loginRes.Data.Token
+	// end login
+	// Create auth headers map
+	authHeaders := map[string]string{
+		"Authorization": token,
+	}
 	// Create
 	createReq := domain.CreatePostsRequest{
 		Title:   "Test Content",
 		Content: "Ini adalah content",
 	}
-	type CreateType domain.ResponseSingleData[domain.Posts]
-	cre, code := doRequest[CreateType](
+	type CreateTypePost domain.ResponseSingleData[domain.Posts]
+	cre, code := doRequest[CreateTypePost](
 		t, http.MethodPost,
 		kit.BaseURL+"/api/v1/posts",
 		createReq,
+		authHeaders,
 	)
 	require.Equal(t, http.StatusCreated, code)
 	post := cre.Data
@@ -45,6 +82,7 @@ func TestPostsCRUD_E2E(t *testing.T) {
 		t, http.MethodGet,
 		fmt.Sprintf("%s/api/v1/posts/%s", kit.BaseURL, post.ID),
 		nil,
+		authHeaders,
 	)
 	require.Equal(t, http.StatusOK, code)
 	require.Equal(t, post.ID, getE.Data.ID)
@@ -59,6 +97,7 @@ func TestPostsCRUD_E2E(t *testing.T) {
 		t, http.MethodPut,
 		fmt.Sprintf("%s/api/v1/posts/%s", kit.BaseURL, post.ID),
 		updPayload,
+		authHeaders,
 	)
 	require.Equal(t, http.StatusOK, code)
 	require.Equal(t, "Jane Doe", updE.Data.Title)
@@ -70,6 +109,7 @@ func TestPostsCRUD_E2E(t *testing.T) {
 		nil,
 	)
 	require.NoError(t, err)
+	req.Header.Set("Authorization", token)
 	resp, err := http.DefaultClient.Do(req)
 	require.NoError(t, err)
 	require.Equal(t, http.StatusNoContent, resp.StatusCode)
@@ -81,6 +121,7 @@ func TestPostsCRUD_E2E(t *testing.T) {
 		t, http.MethodGet,
 		fmt.Sprintf("%s/api/v1/posts/%s", kit.BaseURL, post.ID),
 		nil,
+		map[string]string{"Authorization": "Bearer " + token},
 	)
 	require.Equal(t, http.StatusNotFound, code)
 	require.Equal(t, "Post not found", errE.Message)
