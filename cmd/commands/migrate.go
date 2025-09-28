@@ -9,7 +9,6 @@ import (
 )
 
 func runMigration(db *sql.DB, dir string, args []string) error {
-
 	err := goose.SetDialect("postgres")
 	if err != nil {
 		return fmt.Errorf("migrate: %w", err)
@@ -31,7 +30,10 @@ func runMigration(db *sql.DB, dir string, args []string) error {
 	case "reset":
 		err = goose.Reset(db, dir)
 	case "version":
-		version := goose.Version(db, dir)
+		version, err := goose.GetDBVersion(db)
+		if err != nil {
+			return fmt.Errorf("failed to get version: %w", err)
+		}
 		fmt.Printf("Current migration version: %d\n", version)
 	default:
 		err = errors.New(mode + " is not Migrate function")

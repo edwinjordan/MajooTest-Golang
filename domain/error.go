@@ -13,4 +13,10 @@ var (
 	ErrBadParamInput = errors.New("given Param is not valid")
 	// ErrUserNotFound
 	ErrUserNotFound = errors.New("user not found")
+	// ErrCSVJobNotFound will throw if the CSV job is not found
+	ErrCSVJobNotFound = errors.New("CSV job not found")
+	// ErrCSVFileInvalid will throw if the CSV file is invalid
+	ErrCSVFileInvalid = errors.New("invalid CSV file")
+	// ErrCSVProcessingFailed will throw if CSV processing fails
+	ErrCSVProcessingFailed = errors.New("CSV processing failed")
 )

@@ -14,13 +14,23 @@ type Posts struct {
 type CreatePostsRequest struct {
 	Title   string `json:"title" validate:"required"`
 	Content string `json:"content" validate:"required"`
-	Slug    string `json:"slug" validate:"required"`
+	Slug    string `json:"slug" `
+}
+
+type CreatePostsRequestSwagger struct {
+	Title   string `json:"title" validate:"required"`
+	Content string `json:"content" validate:"required"`
 }
 
 type UpdatePostsRequest struct {
 	Title   string `json:"title" validate:"required"`
 	Content string `json:"content" validate:"required"`
 	Slug    string `json:"slug" validate:"required"`
+}
+
+type UpdatePostsRequestSwagger struct {
+	Title   string `json:"title" validate:"required"`
+	Content string `json:"content" validate:"required"`
 }
 
 type PostsFilter struct {

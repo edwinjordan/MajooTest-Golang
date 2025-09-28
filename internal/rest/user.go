@@ -33,12 +33,12 @@ func NewUserHandler(e *echo.Group, svc UserService) {
 	handler := &UserHandler{
 		Service: svc,
 	}
-	usersGroup := e.Group("/users")
-	usersGroup.GET("", handler.GetUserList)
-	usersGroup.GET("/:id", handler.GetUser)
-	usersGroup.POST("", handler.CreateUser)
-	usersGroup.PUT("/:id", handler.UpdateUser)
-	usersGroup.DELETE("/:id", handler.DeleteUser)
+	//usersGroup := e.Group("/users")
+	e.GET("", handler.GetUserList)
+	e.GET("/:id", handler.GetUser)
+	e.POST("", handler.CreateUser)
+	e.PUT("/:id", handler.UpdateUser)
+	e.DELETE("/:id", handler.DeleteUser)
 }
 
 // GetUser godoc

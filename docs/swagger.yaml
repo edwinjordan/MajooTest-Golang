@@ -1,5 +1,96 @@
 basePath: /api/v1
 definitions:
+  domain.CSVJob:
+    properties:
+      completed_at:
+        type: string
+      created_at:
+        type: string
+      error_message:
+        type: string
+      failed_rows:
+        type: integer
+      filename:
+        type: string
+      id:
+        type: string
+      processed_rows:
+        type: integer
+      started_at:
+        type: string
+      status:
+        $ref: '#/definitions/domain.CSVJobStatus'
+      total_rows:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  domain.CSVJobStatus:
+    enum:
+    - pending
+    - processing
+    - completed
+    - failed
+    type: string
+    x-enum-varnames:
+    - CSVJobStatusPending
+    - CSVJobStatusProcessing
+    - CSVJobStatusCompleted
+    - CSVJobStatusFailed
+  domain.CSVProcessingProgress:
+    properties:
+      failed_rows:
+        type: integer
+      job_id:
+        type: string
+      message:
+        type: string
+      processed_rows:
+        type: integer
+      status:
+        $ref: '#/definitions/domain.CSVJobStatus'
+      success_rate:
+        type: number
+      total_rows:
+        type: integer
+    type: object
+  domain.CSVUploadResponse:
+    properties:
+      jobs:
+        items:
+          $ref: '#/definitions/domain.CSVJob'
+        type: array
+      message:
+        type: string
+    type: object
+  domain.Comment:
+    properties:
+      body:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      post_id:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  domain.CreateCommentRequest:
+    properties:
+      body:
+        type: string
+      post_id:
+        type: string
+      user_id:
+        type: string
+    required:
+    - body
+    - post_id
+    - user_id
+    type: object
   domain.CreatePostsRequest:
     properties:
       content:
@@ -27,6 +118,49 @@ definitions:
     - password
     type: object
   domain.Empty:
+    type: object
+  domain.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  domain.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  domain.LoginResponse:
+    properties:
+      refresh_token:
+        type: string
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/domain.User'
+    type: object
+  domain.PaginatedResponse:
+    properties:
+      data: {}
+      pagination:
+        $ref: '#/definitions/domain.PaginationInfo'
+    type: object
+  domain.PaginationInfo:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
     type: object
   domain.Posts:
     properties:
@@ -58,6 +192,35 @@ definitions:
       status:
         description: string
         type: string
+    type: object
+  domain.ResponseSingleData-domain_LoginResponse:
+    properties:
+      code:
+        description: number
+        type: integer
+      data:
+        allOf:
+        - $ref: '#/definitions/domain.LoginResponse'
+        description: of data
+      message:
+        description: string
+        type: string
+      status:
+        description: string
+        type: string
+    type: object
+  domain.UpdateCommentRequest:
+    properties:
+      body:
+        type: string
+      post_id:
+        type: string
+      user_id:
+        type: string
+    required:
+    - body
+    - post_id
+    - user_id
     type: object
   domain.UpdatePostsRequest:
     properties:
@@ -112,6 +275,300 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user
+      parameters:
+      - description: User signin credentials
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/domain.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully logged in
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_LoginResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+      summary: Login In
+      tags:
+      - Users Authentication
+  /comments:
+    get:
+      description: Get all comments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Comment'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+      security:
+      - ApiKeyAuth: []
+      summary: List comments
+      tags:
+      - comments
+    post:
+      consumes:
+      - application/json
+      description: create a new comment
+      parameters:
+      - description: Comment data
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.CreateCommentRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+      summary: Create comment
+      tags:
+      - comments
+  /comments/{id}:
+    delete:
+      description: delete an existing comment entry by ID
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete comment
+      tags:
+      - comments
+    get:
+      description: Get post details by ID
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Comment'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+      security:
+      - ApiKeyAuth: []
+      summary: Get post by ID
+      tags:
+      - comments
+    put:
+      consumes:
+      - application/json
+      description: update an existing comment entry by ID
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated comment data
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ResponseSingleData-domain_Empty'
+      security:
+      - ApiKeyAuth: []
+      summary: Update comment
+      tags:
+      - comments
+  /csv/jobs:
+    get:
+      description: Get all CSV processing jobs for the authenticated user
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/domain.PaginatedResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/domain.CSVJob'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get user CSV jobs
+      tags:
+      - CSV
+  /csv/jobs/{job_id}/progress:
+    get:
+      description: Get real-time progress of a CSV processing job
+      parameters:
+      - description: CSV Job ID
+        in: path
+        name: job_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.CSVProcessingProgress'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get CSV job progress
+      tags:
+      - CSV
+  /csv/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload multiple CSV files for concurrent processing
+      parameters:
+      - description: CSV files to upload
+        in: formData
+        name: files
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.CSVUploadResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Upload and process CSV files
+      tags:
+      - CSV
   /posts:
     get:
       description: Get all posts

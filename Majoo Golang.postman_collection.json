@@ -1,0 +1,740 @@
+{
+	"info": {
+		"_postman_id": "2bc2fc4b-27bc-4188-9e59-86197d9b6003",
+		"name": "Majoo Golang",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9217500"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Auth User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"john@example.com\",\r\n    \"password\" : \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/auth/login",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAxNzYyMSwiaWF0IjoxNzU5MDE0MDIxfQ._YA1XzK-EyvxDMbqvtlcO3WitqKc0FK5ISC9dRip0aM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"admin\",\r\n    \"email\" : \"admin12@gmail.com\",\r\n    \"password\" : \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/users",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAxNzYyMSwiaWF0IjoxNzU5MDE0MDIxfQ._YA1XzK-EyvxDMbqvtlcO3WitqKc0FK5ISC9dRip0aM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"admin\",\r\n    \"email\" : \"admin12@gmail.com\",\r\n    \"password\" : \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/users",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAxNzYyMSwiaWF0IjoxNzU5MDE0MDIxfQ._YA1XzK-EyvxDMbqvtlcO3WitqKc0FK5ISC9dRip0aM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"admin\",\r\n    \"email\" : \"admin13@gmail.com\",\r\n    \"password\" : \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/users/163738f1-f47c-419a-bd9b-3b784c4edc6e",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"163738f1-f47c-419a-bd9b-3b784c4edc6e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAxNzYyMSwiaWF0IjoxNzU5MDE0MDIxfQ._YA1XzK-EyvxDMbqvtlcO3WitqKc0FK5ISC9dRip0aM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/users/163738f1-f47c-419a-bd9b-3b784c4edc6e",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"163738f1-f47c-419a-bd9b-3b784c4edc6e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": []
+		},
+		{
+			"name": "CSV",
+			"item": [
+				{
+					"name": "Get Job CSV",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAxNzYyMSwiaWF0IjoxNzU5MDE0MDIxfQ._YA1XzK-EyvxDMbqvtlcO3WitqKc0FK5ISC9dRip0aM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/csv/jobs?page=1&limit=10",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"csv",
+								"jobs"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Job Progress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAxNzYyMSwiaWF0IjoxNzU5MDE0MDIxfQ._YA1XzK-EyvxDMbqvtlcO3WitqKc0FK5ISC9dRip0aM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/csv/jobs/97066c8e-17bd-4203-b227-2bd4c2885d24/progress",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"csv",
+								"jobs",
+								"97066c8e-17bd-4203-b227-2bd4c2885d24",
+								"progress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Job Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAxNzYyMSwiaWF0IjoxNzU5MDE0MDIxfQ._YA1XzK-EyvxDMbqvtlcO3WitqKc0FK5ISC9dRip0aM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/csv/jobs/97066c8e-17bd-4203-b227-2bd4c2885d24",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"csv",
+								"jobs",
+								"97066c8e-17bd-4203-b227-2bd4c2885d24"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Steram Progress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAxNzYyMSwiaWF0IjoxNzU5MDE0MDIxfQ._YA1XzK-EyvxDMbqvtlcO3WitqKc0FK5ISC9dRip0aM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/csv/jobs/97066c8e-17bd-4203-b227-2bd4c2885d24/stream",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"csv",
+								"jobs",
+								"97066c8e-17bd-4203-b227-2bd4c2885d24",
+								"stream"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post",
+			"item": [
+				{
+					"name": "Get Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAxNzYyMSwiaWF0IjoxNzU5MDE0MDIxfQ._YA1XzK-EyvxDMbqvtlcO3WitqKc0FK5ISC9dRip0aM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/posts",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Posts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAxNzYyMSwiaWF0IjoxNzU5MDE0MDIxfQ._YA1XzK-EyvxDMbqvtlcO3WitqKc0FK5ISC9dRip0aM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"content\": \"ini content\",\r\n  \"title\": \"ini adalah judul\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/posts",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAxNzYyMSwiaWF0IjoxNzU5MDE0MDIxfQ._YA1XzK-EyvxDMbqvtlcO3WitqKc0FK5ISC9dRip0aM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/posts/8b9baeab-9b8e-4289-89a7-308e4fb0110c",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"posts",
+								"8b9baeab-9b8e-4289-89a7-308e4fb0110c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAxNzYyMSwiaWF0IjoxNzU5MDE0MDIxfQ._YA1XzK-EyvxDMbqvtlcO3WitqKc0FK5ISC9dRip0aM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/posts/8b9baeab-9b8e-4289-89a7-308e4fb0110c",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"posts",
+								"8b9baeab-9b8e-4289-89a7-308e4fb0110c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comment",
+			"item": [
+				{
+					"name": "Get Comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAyMzE4NSwiaWF0IjoxNzU5MDE5NTg1fQ.-dFmD8vokRBuKGiCQAOWiAWrkP7eWoh81vij8o036mk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/comments",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAyMjM0MywiaWF0IjoxNzU5MDE4NzQzfQ.nzocHadAijkQqX2Sp15kKzwuQIVGbd_cPlcUmQlnehg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\" :\"02849093-101b-4ad5-b531-ea9c9536e679\",\r\n    \"post_id\" : \"f8fc4ca1-a9c3-4f36-b554-bf5383d13d1d\",\r\n    \"body\" : \"ini adalah comment\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/comments",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAyMjM0MywiaWF0IjoxNzU5MDE4NzQzfQ.nzocHadAijkQqX2Sp15kKzwuQIVGbd_cPlcUmQlnehg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\" :\"02849093-101b-4ad5-b531-ea9c9536e679\",\r\n    \"post_id\" : \"f8fc4ca1-a9c3-4f36-b554-bf5383d13d1d\",\r\n    \"body\" : \"ini adalah comment rubah\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/comments/8114cb77-b208-4928-9707-6e9ed3dedfba",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								"8114cb77-b208-4928-9707-6e9ed3dedfba"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAyMzE4NSwiaWF0IjoxNzU5MDE5NTg1fQ.-dFmD8vokRBuKGiCQAOWiAWrkP7eWoh81vij8o036mk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8000/api/v1/comments/8114cb77-b208-4928-9707-6e9ed3dedfba",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								"8114cb77-b208-4928-9707-6e9ed3dedfba"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CSV Upload",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzNzQwYjkyLTJmYWItNGQ5ZS1iMWZjLTYwNzBlOGU5MGNjNSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImV4cCI6MTc1OTAxNzYyMSwiaWF0IjoxNzU5MDE0MDIxfQ._YA1XzK-EyvxDMbqvtlcO3WitqKc0FK5ISC9dRip0aM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Users/User/Downloads/username-password-recovery-code.csv"
+						},
+						{
+							"key": "user_id",
+							"value": "\"53740b92-2fab-4d9e-b1fc-6070e8e90cc5\"",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/api/v1/csv/upload",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"csv",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

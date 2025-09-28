@@ -28,6 +28,8 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/sirupsen/logrus"
+
 	//"os/user"
 
 	"github.com/edwinjordan/MajooTest-Golang/config"
@@ -93,19 +95,32 @@ func main() {
 	userRepo := postgres.NewUserRepository(dbPool)
 	postsRepo := postgres.NewPostsRepository(dbPool)
 	commentRepo := postgres.NewCommentRepository(dbPool)
+	csvRepo := postgres.NewCSVRepository(dbPool)
+	authRepo := postgres.NewAuthRepository(dbPool)
 
 	userService := service.NewUserService(userRepo)
 	postsService := service.NewPostsService(postsRepo)
 	commentService := service.NewCommentService(commentRepo)
+	// Create logrus logger for CSV service
+	logger := logrus.New()
+	logger.SetLevel(logrus.InfoLevel)
+	logger.SetFormatter(&logrus.JSONFormatter{})
+
+	csvService := service.NewCSVService(csvRepo, logger)
+	authService := service.NewAuthService(authRepo)
 
 	apiV1 := e.Group("/api/v1")
-	usersGroup := apiV1.Group("")
-	postsGroup := apiV1.Group("")
-	commentGroup := apiV1.Group("")
+	usersGroup := apiV1.Group("/users", middleware.ValidateUserToken())
+	postsGroup := apiV1.Group("/posts", middleware.ValidateUserToken())
+	commentGroup := apiV1.Group("/comments", middleware.ValidateUserToken())
+	csvGroup := apiV1.Group("/csv", middleware.ValidateUserToken())
+	authGroup := apiV1.Group("/auth")
 
 	rest.NewUserHandler(usersGroup, userService)
 	rest.NewPostsHandler(postsGroup, postsService)
 	rest.NewCommentHandler(commentGroup, commentService)
+	rest.NewCSVHandler(csvGroup, csvService, logger)
+	rest.NewAuthHandler(authGroup, authService)
 
 	// Get host from environment variable, default to 127.0.0.1 if not set
 	host := os.Getenv("APP_HOST")

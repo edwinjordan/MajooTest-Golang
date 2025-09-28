@@ -32,12 +32,12 @@ func NewPostsHandler(e *echo.Group, svc PostsService) {
 	handler := &PostsHandler{
 		Service: svc,
 	}
-	postsGroup := e.Group("/posts")
-	postsGroup.GET("", handler.GetPostsList)
-	postsGroup.GET("/:id", handler.GetPosts)
-	postsGroup.POST("", handler.CreatePosts)
-	postsGroup.PUT("/:id", handler.UpdatePosts)
-	postsGroup.DELETE("/:id", handler.DeletePosts)
+	//postsGroup := e.Group("/posts")
+	e.GET("", handler.GetPostsList)
+	e.GET("/:id", handler.GetPosts)
+	e.POST("", handler.CreatePosts)
+	e.PUT("/:id", handler.UpdatePosts)
+	e.DELETE("/:id", handler.DeletePosts)
 }
 
 // GetPosts godoc
@@ -135,7 +135,7 @@ func (h *PostsHandler) GetPosts(c echo.Context) error {
 // @Tags posts
 // @Accept  json
 // @Produce  json
-// @Param   post  body  domain.CreatePostsRequest  true  "Post data"
+// @Param   post  body  domain.CreatePostsRequestSwagger  true  "Post data"
 // @Success 201 {object} domain.CreatePostsRequest
 // @Failure 400 {object} domain.ResponseSingleData[domain.Empty]
 // @Failure 500 {object} domain.ResponseSingleData[domain.Empty]
@@ -173,7 +173,7 @@ func (h *PostsHandler) CreatePosts(c echo.Context) error {
 // @Accept  json
 // @Produce  json
 // @Param   id    path  string             true  "Post ID"
-// @Param   post  body  domain.UpdatePostsRequest  true  "Updated post data"
+// @Param   post  body  domain.UpdatePostsRequestSwagger  true  "Updated post data"
 // @Success 200 {object} domain.Posts
 // @Failure 400 {object} domain.ResponseSingleData[domain.Empty]
 // @Failure 404 {object} domain.ResponseSingleData[domain.Empty]

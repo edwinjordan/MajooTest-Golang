@@ -21,3 +21,23 @@ type ResponseMultipleData[Data any] struct {
 }
 
 type Empty struct{}
+
+// ErrorResponse represents an error response
+type ErrorResponse struct {
+	Message string `json:"message"`
+	Code    int    `json:"code,omitempty"`
+}
+
+// PaginationInfo represents pagination metadata
+type PaginationInfo struct {
+	Page       int `json:"page"`
+	Limit      int `json:"limit"`
+	Total      int `json:"total"`
+	TotalPages int `json:"total_pages"`
+}
+
+// PaginatedResponse represents a paginated response
+type PaginatedResponse struct {
+	Data       interface{}    `json:"data"`
+	Pagination PaginationInfo `json:"pagination"`
+}

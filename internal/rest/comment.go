@@ -32,12 +32,12 @@ func NewCommentHandler(e *echo.Group, svc CommentService) {
 	handler := &CommentHandler{
 		Service: svc,
 	}
-	commentsGroup := e.Group("/comments")
-	commentsGroup.GET("", handler.GetCommentList)
-	commentsGroup.GET("/:id", handler.GetComment)
-	commentsGroup.POST("", handler.CreateComment)
-	commentsGroup.PUT("/:id", handler.UpdateComment)
-	commentsGroup.DELETE("/:id", handler.DeleteComment)
+	//commentsGroup := e.Group("/comments")
+	e.GET("", handler.GetCommentList)
+	e.GET("/:id", handler.GetComment)
+	e.POST("", handler.CreateComment)
+	e.PUT("/:id", handler.UpdateComment)
+	e.DELETE("/:id", handler.DeleteComment)
 }
 
 // GetComments godoc
